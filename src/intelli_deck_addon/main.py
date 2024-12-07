@@ -160,30 +160,21 @@ class AddWordDialog(QDialog):
         # Right Column (Results)
         right_column = QVBoxLayout()
         
-        # Create header layout with translation label and audio player
+        # Create header layout with translation label and spinner
         header_layout = QHBoxLayout()
 
-        # Left side: Translation label and its spinner
-        translation_left_layout = QHBoxLayout()
+        # Translation label and its spinner
         translation_label = QLabel("Word and Grammar Information:")
         self.spinner_label = QLabel()  # Translation spinner
         self.spinner_movie = QMovie(os.path.join(os.path.dirname(__file__), "assets", "spinner.gif"))
         self.spinner_movie.setScaledSize(QSize(20, 20))
         self.spinner_label.setMovie(self.spinner_movie)
         self.spinner_label.hide()
-        translation_left_layout.addWidget(translation_label)
-        translation_left_layout.addWidget(self.spinner_label)
-        header_layout.addLayout(translation_left_layout)
+        header_layout.addWidget(translation_label)
+        header_layout.addWidget(self.spinner_label)
+        header_layout.addStretch()  # Push everything to the left
 
-        # Right side: Audio button and its spinner
-        header_layout.addStretch()  # Push audio controls to the right
-        self.play_audio_button = QPushButton("Play Audio")
-        self.play_audio_button.clicked.connect(self.play_audio)
-        self.play_audio_button.setEnabled(False)
-        self.play_audio_button.hide()
-        header_layout.addWidget(self.play_audio_button)
-
-        # # Audio spinner
+        # Audio spinner for examples
         self.audio_spinner_label = QLabel()
         self.audio_spinner_movie = QMovie(os.path.join(os.path.dirname(__file__), "assets", "spinner.gif"))
         self.audio_spinner_movie.setScaledSize(QSize(20, 20))
@@ -196,7 +187,7 @@ class AddWordDialog(QDialog):
         
         # Create horizontal layout for translation and image
         translation_image_layout = QHBoxLayout()
-        
+
         # Add translation display
         self.translation_display = QTextEdit()
         self.translation_display.setReadOnly(True)
@@ -240,7 +231,7 @@ class AddWordDialog(QDialog):
         # Add OpenAI API Key Section
         api_section = QVBoxLayout()
         api_label = QLabel("OpenAI API Key (required for AI features):")
-        
+
         # Create horizontal layout for API key input and save button
         api_input_layout = QHBoxLayout()
         
@@ -314,15 +305,12 @@ class AddWordDialog(QDialog):
         self.spinner_label.show()
         self.spinner_movie.start()
 
-        # Hide the play button when generating new translation
-        self.play_audio_button.hide()
+        # Reset the image placeholder when generating new translation
         self.reset_image_placeholder()
         self.reset_example_placeholder()
 
         # Show audio loading state if audio generation is enabled
         if self.generate_audio_checkbox.isChecked():
-            self.play_audio_button.show()
-            self.play_audio_button.setEnabled(False)
             self.audio_spinner_label.show()
             self.audio_spinner_movie.start()
 
@@ -377,7 +365,7 @@ class AddWordDialog(QDialog):
 
     def generate_audio(self):
         """
-        Initiates audio generation process.
+        Initiates audio generation process for examples.
         """
         try:
             self.audio_ready = False
@@ -390,7 +378,6 @@ class AddWordDialog(QDialog):
             self.tts_worker.start()
         except Exception as e:
             showInfo(f"Audio generation failed: {str(e)}")
-            self.word_profile['audio_filename'] = None
             self.audio_ready = True
             self.update_add_button_state()
 
@@ -402,12 +389,6 @@ class AddWordDialog(QDialog):
             self.word_profile.update(audio_paths)
             self.audio_ready = True
             self.update_add_button_state()
-
-            # Update UI for main word audio
-            if 'audio_filename' in audio_paths:
-                self.play_audio_button.setEnabled(True)
-                self.audio_spinner_label.hide()
-                self.audio_spinner_movie.stop()
 
             # Update example audio buttons
             for i in range(self.examples_layout.count()):
@@ -422,6 +403,10 @@ class AddWordDialog(QDialog):
                         play_button.setEnabled(True)
                         spinner_label.hide()
 
+            # Hide the main audio spinner
+            self.audio_spinner_label.hide()
+            self.audio_spinner_movie.stop()
+
             if self.anki_config.get("show_notifications", False):
                 showInfo("Audio generated successfully")
         else:
@@ -435,10 +420,10 @@ class AddWordDialog(QDialog):
         Handles errors during audio generation.
         """
         showInfo(f"Audio generation failed: {error_message}")
-        self.word_profile['audio_filename'] = None
         self.audio_ready = True
         self.update_add_button_state()
-        self.play_audio_button.hide()
+        self.audio_spinner_label.hide()
+        self.audio_spinner_movie.stop()
 
     def play_audio(self):
         """
@@ -492,12 +477,14 @@ class AddWordDialog(QDialog):
             translation_html += f"<p><b>Article:</b> {noun_info['article']}</p>"
         if noun_info.get('plural_form'):
             translation_html += f"<p><b>Plural:</b> {noun_info['plural_form']}</p>"
-        if verb_info.get('praesens'):
-            translation_html += f"<p><b>Präsens:</b> {', '.join(verb_info['praesens'])}</p>"
-        if verb_info.get('praeteritum'):
-            translation_html += f"<p><b>Präteritum:</b> {', '.join(verb_info['praeteritum'])}</p>"
-        if verb_info.get('perfekt'):
-            translation_html += f"<p><b>Perfekt:</b> {', '.join(verb_info['perfekt'])}</p>"
+        if verb_info.get('irregular_verb'):
+            translation_html += f"<p><b>Irregular Verb:</b> {verb_info['irregular_verb']}</p>"
+            if verb_info.get('praesens'):
+                translation_html += f"<p><b>Präsens:</b> {', '.join(verb_info['praesens'])}</p>"
+            if verb_info.get('praeteritum'):
+                translation_html += f"<p><b>Präteritum:</b> {', '.join(verb_info['praeteritum'])}</p>"
+            if verb_info.get('perfekt'):
+                translation_html += f"<p><b>Perfekt:</b> {', '.join(verb_info['perfekt'])}</p>"
 
         self.translation_display.setHtml(translation_html)
 

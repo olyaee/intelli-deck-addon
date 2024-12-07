@@ -46,6 +46,7 @@ openai:
         - *If the word is a verb*:
           - Indicate that the word is a verb with '(v)'.
           - Provide the verb conjugations: Infinitive, Präsens, Präteritum, Perfekt for all forms in German (ich, du, er/sie/es, wir, ihr, sie/Sie).
+          - Indicate if the verb is unregelmäßig with 'irregular_verb: true' or 'irregular_verb: false'.
         - *If the word is an adjective*:
           - Indicate that the word is an adjective with '(adj)'.
         - *If the word is none of the above*:
@@ -99,6 +100,7 @@ openai:
             type: object
             properties:
               infinitive: { type: string }
+              irregular_verb: { type: boolean }
               praesens: 
                 type: array 
                 items: { type: string }

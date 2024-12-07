@@ -136,17 +136,6 @@ class TTSWorker(QThread):
             client = OpenAI(api_key=self.anki_config.get('openai_api_key', ''))
             tts_model = self.config.get('openai', {}).get('tts_model', 'tts-1')
             
-            # Generate audio for main word
-            word_audio_path = os.path.join(audio_files_dir, f"{main_word}_word.mp3")
-            response = client.audio.speech.create(
-                model=tts_model,
-                input=main_word,
-                voice=voice
-            )
-            with open(word_audio_path, 'wb') as audio_file:
-                audio_file.write(response.content)
-            audio_paths_dict['audio_filename'] = os.path.relpath(word_audio_path, mw.addonManager.addonsFolder())
-            
             # Generate audio for examples
             for index, example in enumerate(self.word_profile.get('examples', [])):
                 example_audio_path = os.path.join(audio_files_dir, f"{main_word}_example_{index + 1}.mp3")
@@ -158,7 +147,7 @@ class TTSWorker(QThread):
                 with open(example_audio_path, 'wb') as audio_file:
                     audio_file.write(response.content)
                 audio_paths_dict[f'example_{index+1}_audio_filename'] = os.path.relpath(example_audio_path, mw.addonManager.addonsFolder())
-            
+
             self.finished.emit(audio_paths_dict)
             
         except Exception as e:
@@ -192,7 +181,7 @@ class ImageWorker(QThread):
             word = self.word_profile['german_word']
 
             # Generate image prompt based on word profil
-            image_prompt = f"Create a clear, simple illustration representing the word '{self.word_profile}'. The image should be easily recognizable and suitable for language learning. The image should focus on the word itslef not the examples."
+            image_prompt = f"Create a clear, simple illustration representing the word '{self.word_profile['german_word']}'. The image should be easily recognizable and suitable for language learning. The image should focus on the word itslef not the examples. the image should not have any letters on it."
             # Generate image using DALL-E
             image_response = client.images.generate(
                 model=image_model,

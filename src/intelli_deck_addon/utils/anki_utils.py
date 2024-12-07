@@ -185,9 +185,10 @@ def add_note_to_deck(word_profile, deck_id, show_notifications=True):
             
         # Handle verb-specific fields
         verb_info = additional_info.get('verb', {})
-        note['Praesens'] = ', '.join(verb_info.get('praesens', []))
-        note['Praeteritum'] = ', '.join(verb_info.get('praeteritum', []))
-        note['Perfekt'] = ', '.join(verb_info.get('perfekt', []))
+        if verb_info.get('irregular_verb'):
+            note['Praesens'] = ', '.join(verb_info.get('praesens', []))
+            note['Praeteritum'] = ', '.join(verb_info.get('praeteritum', []))
+            note['Perfekt'] = ', '.join(verb_info.get('perfekt', []))
             
         # Handle example sentences
         examples = word_profile.get('examples', [])
