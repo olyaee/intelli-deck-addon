@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "intelli-deck-addon"
+version = "0.1.0"
+description = "A custom Anki add-on."
+authors = ["Your Name <you@example.com>"]
+packages = [{ include = "intelli_deck_addon", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "3.9.15"
+requests = "^2.32.3"
+openai = "^1.54.4"
+typing-extensions = "^4.12.2"
+aqt = "^24.6.3"
+pillow = "^11.0.0"
+pyyaml = "^6.0.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api" 
