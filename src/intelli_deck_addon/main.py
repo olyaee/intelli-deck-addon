@@ -97,7 +97,7 @@ class AddWordDialog(QDialog):
         left_column = QVBoxLayout()
         
         # Title
-        title_label = QLabel("Enter a German or source language word to generate an Anki card with detailed information.")
+        title_label = QLabel("Enter a word in German or the language of your choice to generate an Anki card with detailed information.")
         title_label.setWordWrap(True)
         left_column.addWidget(title_label)
         
@@ -112,6 +112,11 @@ class AddWordDialog(QDialog):
         
         # Language Selection
         language_label = QLabel("Select the source language:")
+        language_label.setToolTip("""
+            Choose the language you want to translate from.
+            You can enter words in either your preferred language or German.
+        """)
+        language_label.setCursor(Qt.CursorShape.WhatsThisCursor)
         self.language_dropdown = QComboBox()
         self.language_dropdown.addItems(self.config.get('languages', {}).get('supported_source_languages', []))
         left_column.addWidget(language_label)
@@ -119,6 +124,15 @@ class AddWordDialog(QDialog):
 
         # Proficiency Level
         level_label = QLabel("Select the proficiency level:")
+        level_label.setToolTip("""
+            Choose the CEFR proficiency level for generated examples:
+            - A1/A2: Basic/Elementary level
+            - B1/B2: Intermediate/Upper Intermediate
+            - C1/C2: Advanced/Mastery
+            
+            Examples will use vocabulary and grammar appropriate for the selected level.
+        """)
+        level_label.setCursor(Qt.CursorShape.WhatsThisCursor)
         self.level_dropdown = QComboBox()
         self.level_dropdown.addItems(self.config.get('language_levels', []))
         left_column.addWidget(level_label)
@@ -126,6 +140,19 @@ class AddWordDialog(QDialog):
 
         # Word Input
         word_label = QLabel("Enter a German or source language word:")
+        word_label.setToolTip("""
+            Enter a word to generate a study card:
+            - For German words: it will generate the word profile and examples 
+            - For source language: The add-on will translate to German and generate the word profile and examples 
+            
+            The add-on will generate:
+            - Accurate translations
+            - Grammar information
+            - Context-appropriate examples
+            - Audio pronunciation (if enabled)
+            - Related images (if enabled)
+        """)
+        word_label.setCursor(Qt.CursorShape.WhatsThisCursor)
         self.word_input = QLineEdit()
         left_column.addWidget(word_label)
         left_column.addWidget(self.word_input)
@@ -133,6 +160,13 @@ class AddWordDialog(QDialog):
         # Deck Selection
         self.decks = get_all_decks()
         deck_label = QLabel("Select Deck:")
+        deck_label.setToolTip("""
+            Choose the Anki deck where your new card will be saved.
+            
+            Tip:
+            - The default deck can be changed in the add-on settings
+        """)
+        deck_label.setCursor(Qt.CursorShape.WhatsThisCursor)
         self.deck_dropdown = QComboBox()
         self.deck_dropdown.addItems(self.decks.keys())
         
@@ -231,6 +265,17 @@ class AddWordDialog(QDialog):
         # Add OpenAI API Key Section
         api_section = QVBoxLayout()
         api_label = QLabel("OpenAI API Key (required for AI features):")
+        api_label.setToolTip("""
+            To use this add-on, you need an OpenAI API key:
+            1. Go to platform.openai.com/api-keys
+            2. Sign up or log in to your OpenAI account
+            3. Create a new API key
+            4. Copy and paste the key here
+            
+            Note: Keep your API key secure and never share it.
+            If you still face a problem, please contact olyaee.ehsan@gmail.com.
+        """)
+        api_label.setCursor(Qt.CursorShape.WhatsThisCursor)  # Changes cursor to question mark when hovering
 
         # Create horizontal layout for API key input and save button
         api_input_layout = QHBoxLayout()
