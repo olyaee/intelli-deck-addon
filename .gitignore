@@ -40,3 +40,4 @@ src/intelli_deck_addon/media_files/
 poetry.lock
 .gitignore
 .gitignore
+libs/
