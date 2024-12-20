@@ -1,9 +1,13 @@
 [tool.poetry]
 name = "intelli-deck-addon"
 version = "0.1.0"
-description = "A custom Anki add-on."
-authors = ["Your Name <you@example.com>"]
-packages = [{ include = "intelli_deck_addon", from = "src" }]
+description = "An Anki add-on that uses AI to generate comprehensive vocabulary cards"
+authors = ["Ehsan Olyaee <olyaee.ehsan@gmail.com>"]
+readme = "README.md"
+packages = [{include = "intelli_deck_addon", from = "src"}]
+repository = "https://github.com/ehsanolyaee/intelli-deck-addon"
+keywords = ["anki", "addon", "ai", "language-learning", "flashcards"]
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "3.9.15"
