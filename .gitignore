@@ -41,3 +41,4 @@ poetry.lock
 .gitignore
 .gitignore
 libs/
+intelli_deck_addon.ankiaddon
